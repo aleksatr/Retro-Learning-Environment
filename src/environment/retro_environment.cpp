@@ -114,7 +114,7 @@ void RetroEnvironment::reset() {
 		  emulateStart(startingActions[i], PLAYER_B | JOYPAD_NOOP);
 	  }
     // uncomment to view screen of starting actions
-//  m_rlesystem->p_display_screen->display_screen();
+    //m_rlesystem->p_display_screen->display_screen();
   }
   m_settings->startingOperations(*m_rlesystem);
   m_rlesystem->getRetroAgent()->audioEnable(audio);

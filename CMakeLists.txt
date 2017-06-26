@@ -47,6 +47,7 @@ endif()
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(SNES9X_DIR ${CMAKE_CURRENT_SOURCE_DIR}/snes9x2010)
+set(FCEUMM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libretro-fceumm)
 set(STELLA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/stella-libretro)
 set(GENESIS_PLUS_GX_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Genesis-Plus-GX)
 set(PYTHON_RLE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/rle_python_interface)
@@ -98,6 +99,9 @@ IF(INSTALL_CORES)
 	set(SNES9X_INSTALL_COMMAND 
 		mv snes9x2010_libretro.so
 		${LIBDIR}/snes9x2010_libretro.so)
+	set(FCEUMM_INSTALL_COMMAND 
+		mv fceumm_libretro.so
+		${LIBDIR}/fceumm_libretro.so)
 	set(STELLA_INSTALL_COMMAND 
 		mv stella_libretro.so
 		${LIBDIR}/stella_libretro.so)
@@ -106,6 +110,7 @@ IF(INSTALL_CORES)
 		${LIBDIR}/genesis_plus_gx_libretro.so)
 ELSE()
 	set(SNES9X_INSTALL_COMMAND "")
+	set(FCEUMM_INSTALL_COMMAND "")
 	set(STELLA_INSTALL_COMMAND "")
 	set(GENESIS_INSTALL_COMMAND "")
 ENDIF()
@@ -120,6 +125,16 @@ ExternalProject_add(snes9x2010_libretro
 			BUILD_COMMAND ${MAKE}
 			INSTALL_DIR ${LIBDIR}
 			INSTALL_COMMAND "${SNES9X_INSTALL_COMMAND}"
+		   )
+ExternalProject_add(fceumm_libretro
+			GIT_REPOSITORY https://github.com/libretro/libretro-fceumm.git
+			UPDATE_COMMAND ""
+			SOURCE_DIR ${FCEUMM_DIR}
+			BUILD_IN_SOURCE 1
+			CONFIGURE_COMMAND ""
+			BUILD_COMMAND ${MAKE}
+			INSTALL_DIR ${LIBDIR}
+			INSTALL_COMMAND "${FCEUMM_INSTALL_COMMAND}"
 		   )
 ExternalProject_add(stella_libretro
 			GIT_REPOSITORY https://github.com/libretro/stella-libretro.git
@@ -144,6 +159,8 @@ ExternalProject_add(genesis_plus_gx_libretro
 
 IF(BUILD_PYTHON)
 	INSTALL(DIRECTORY ${SNES9X_DIR} DESTINATION ${PYTHON_RLE_DIR}/snes9x2010_libretro.so
+		FILES_MATCHING PATTERN "*.so")
+	INSTALL(DIRECTORY ${FCEUMM_DIR} DESTINATION ${PYTHON_RLE_DIR}/fceumm_libretro.so
 		FILES_MATCHING PATTERN "*.so")
 	INSTALL(DIRECTORY ${GENESIS_PLUS_GX_DIR} DESTINATION ${PYTHON_RLE_DIR}/stella_libretro.so
 		FILES_MATCHING PATTERN "*.so")

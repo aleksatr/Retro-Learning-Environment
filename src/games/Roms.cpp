@@ -36,6 +36,7 @@
 #include "supported/SuperMarioKart.hpp"
 #include "supported/SuperDoubleDragon.hpp"
 #include "supported/ContraIII.hpp"
+#include "supported/FlappyBird.hpp"
 
 // genesis games
 #include "supported/SonicTheHedgehog.hpp"
@@ -158,7 +159,8 @@ static const RomSettings *roms[]  = {
 //    new WizardOfWorSettings(),
 //    new YarsRevengeSettings(),
 //    new ZaxxonSettings(),
-
+	// NES games	
+	new FlappyBirdSettings(),
 	// SNES games
 	new AtariCollectionSettings(),
 	new ClassicKongSettings(),

@@ -56,10 +56,12 @@ int main(int argc, char** argv) {
 //    // Play 10 episodes
     for (int episode=0; episode<10; episode++) {
         float totalReward = 0;
+	    std::cout << "Episode no: " << episode << std::endl;
         while (!rle.game_over()) {
             Action a = legal_actions[rand() % legal_actions.size()];
         	// Apply the action and get the resulting reward
             float reward = rle.act(a);
+		    //std::cout << "Action: " << a << "Reward: " << reward << std::endl;
             totalReward += reward;
         }
         cout << "Episode " << episode << " ended with score: " << totalReward << endl;
