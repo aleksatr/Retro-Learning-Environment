@@ -1,12 +1,12 @@
 cmake_minimum_required (VERSION 2.8)
 project(rle)
 
-option(USE_SDL "Use SDL" OFF)
+option(USE_SDL "Use SDL" ON)
 option(BUILD_EXAMPLES "Build Example Agents" ON)
-option(BUILD_PYTHON "Usef when building Python with distutils" OFF)
+option(BUILD_PYTHON "Usef when building Python with distutils" ON)
 option(DEBUG "Suspend optimization & enable debugging" OFF)
 option(UNIT_TESTING "Build unit tests using Google Test" OFF)
-option(INSTALL_CORES "Install the core libs. Install may require sudo" OFF)
+option(INSTALL_CORES "Install the core libs. Install may require sudo" ON)
 
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wunused -fPIC -fomit-frame-pointer -D__STDC_CONSTANT_MACROS -std=c++11")

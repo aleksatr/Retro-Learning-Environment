@@ -21,7 +21,7 @@ def run_cmake():
     new_dir = op.join(op.split(__file__)[0], 'build')
     dd.mkpath(new_dir)
     os.chdir(new_dir)
-    cmake_args = ' -DBUILD_EXAMPLES=OFF -DBUILD_PYTHON=ON'
+    cmake_args = ' -DBUILD_EXAMPLES=ON -DBUILD_PYTHON=ON'
     cores_to_use = max(1, multiprocessing.cpu_count() - 1)
 
     try:
@@ -42,12 +42,12 @@ class Build(_build.build):
         ds.spawn(['./copy_cores.sh'])
         _build.build.run(self)
 
-version = '1.1.5'
+version = '1.1.6'
 setup(name = 'rle_python_interface',
       version=version,
       description = 'Retro Learning Environment Python Interface based on Ben Goodrich\'s work',
-      url='https://github.com/nadavbh12/Retro-Learning-Environment',
-      download_url='https://github.com/nadavbh12/Retro-Learning-Environment/tarball/'+version,
+      url='https://github.com/aleksatr/Retro-Learning-Environment',
+      download_url='https://github.com/aleksatr/Retro-Learning-Environment/tarball/'+version,
       author='Nadav Bhonker, Shai Rozenberg',
       author_email='nadavbh@gmail.com;shai.roz1989@gmail.com',
       license = 'GPL',
@@ -56,6 +56,7 @@ setup(name = 'rle_python_interface',
       package_data={'rle_python_interface': ['librle_c.so',
                                              'stella_libretro.so',
                                              'snes9x2010_libretro.so',
+                                             'fceumm_libretro.so',
                                              'genesis_plus_gx_libretro.so']},
       cmdclass={'build': Build }
       )

@@ -117,12 +117,14 @@ class RLEInterface(object):
         _ROOT = os.path.abspath(os.path.dirname(__file__))
         if 'snes' == core:
             core_path = _ROOT + '/snes9x2010_libretro.so'
+	    elif 'nes' == core or 'fceumm' == core:
+            core_path = _ROOT + '/fceumm_libretro.so'
         elif 'atari' == core:
             core_path = _ROOT + '/stella_libretro.so'
         elif 'genesis' == core or 'game_gear' == core or 'sg1000' == core:
             core_path = _ROOT + '/genesis_plus_gx_libretro.so'
         else:
-            raise ValueError('core must be atari|snes|genesis|game_gear|sg1000')
+            raise ValueError('core must be atari|snes|genesis|game_gear|sg1000|nes|fceumm')
 
         if (sys.version_info > (3, 0)):
             rle_lib.loadROM(self.obj, str.encode(rom_file), str.encode(core_path))

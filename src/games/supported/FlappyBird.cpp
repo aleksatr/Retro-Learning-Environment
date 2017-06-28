@@ -51,7 +51,7 @@ void FlappyBirdSettings::step(const RleSystem &system)
 	int f = getDecimalScore(0x0011, &system); //flapping - either animation or while playing (alive)
 	int s = getDecimalScore(0x0049, &system); //0 - starting screen, 1 - ingame
 
-	if (f == flap)
+	if (f == flap && s == 0)
 	{
 		m_terminal = true;
 	}
@@ -109,7 +109,7 @@ ActionVect FlappyBirdSettings::getStartingActions(const RleSystem &system)
 	int i;
 	ActionVect startingActions;
 
-	for (i = 0; i < 1000; i++)
+	for (i = 0; i < 500; i++)
 	{
 		startingActions.push_back(JOYPAD_NOOP);
 	}
