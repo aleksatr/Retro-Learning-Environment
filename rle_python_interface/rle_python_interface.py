@@ -117,7 +117,7 @@ class RLEInterface(object):
         _ROOT = os.path.abspath(os.path.dirname(__file__))
         if 'snes' == core:
             core_path = _ROOT + '/snes9x2010_libretro.so'
-	    elif 'nes' == core or 'fceumm' == core:
+        elif 'nes' == core or 'fceumm' == core:
             core_path = _ROOT + '/fceumm_libretro.so'
         elif 'atari' == core:
             core_path = _ROOT + '/stella_libretro.so'
