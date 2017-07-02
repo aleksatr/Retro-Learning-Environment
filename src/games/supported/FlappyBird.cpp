@@ -34,7 +34,6 @@ FlappyBirdSettings::FlappyBirdSettings()
 /* create a new instance of the rom */
 RomSettings *FlappyBirdSettings::clone() const
 {
-
 	RomSettings *rval = new FlappyBirdSettings();
 	*rval = *this;
 	return rval;
@@ -49,15 +48,10 @@ void FlappyBirdSettings::step(const RleSystem &system)
 	m_reward = score - m_score;
 	m_score = score;
 
-	int f = getDecimalScore(0x0011, &system); //flapping - either animation or while playing (alive)
-	int s = getDecimalScore(0x0049, &system); //0 - starting screen, 1 - ingame
+	bool ingame = getDecimalScore(0x0049, &system) == 1;	
+	bool alive = getDecimalScore(0x003C, &system) == 1;
 
-	if (f == flap && s == 0)
-	{
-		m_terminal = true;
-	}
-
-	flap = f;
+	m_terminal = !alive && ingame;
 }
 
 /* is end of game */
@@ -110,7 +104,7 @@ ActionVect FlappyBirdSettings::getStartingActions(const RleSystem &system)
 	int i;
 	ActionVect startingActions;
 
-	for (i = 0; i < 500; i++)
+	for (i = 0; i < 350; i++)
 	{
 		startingActions.push_back(JOYPAD_NOOP);
 	}
