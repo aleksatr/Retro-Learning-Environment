@@ -43,7 +43,8 @@ RomSettings *FlappyBirdSettings::clone() const
 /* process the latest information from ALE */
 void FlappyBirdSettings::step(const RleSystem &system)
 {
-	reward_t score = getDecimalScore(0x0041, &system);
+	reward_t score = getDecimalScore(0x0041, &system) + 10 * getDecimalScore(0x0042, &system) 
+						+ 100 * getDecimalScore(0x0043, &system) + 1000 * getDecimalScore(0x0044, &system);
 
 	m_reward = score - m_score;
 	m_score = score;
