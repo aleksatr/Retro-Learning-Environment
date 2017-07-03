@@ -15,9 +15,9 @@ protected:
   Action _actions[NUMBER_OF_STATES];
   double q[NUMBER_OF_STATES * NUMBER_OF_ACTIONS];
   std::vector<std::pair<State, Action>> _history;
-  const double epsilon = 0.1;
-  double alpha = 0.001;
-  const double discount = 0.9;
+  const double epsilon = 0.01;
+  double alpha = 0.05;
+  const double discount = 0.5;
 
 public:
   Policy();

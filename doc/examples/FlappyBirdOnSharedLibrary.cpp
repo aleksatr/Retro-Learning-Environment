@@ -21,18 +21,19 @@
 #include "../object_model/sarsa.h"
 
 #ifdef __USE_SDL
- #include <SDL.h>
+#include <SDL.h>
 #include "SDL/SDL_rotozoom.h"
 
 #endif
 
 using namespace std;
 using namespace rle;
+using namespace object_model;
 
 #include <unistd.h>
-int main(int argc, char** argv) 
+int main(int argc, char **argv)
 {
-    if (argc < 2) 
+    if (argc < 2)
     {
         std::cerr << "Usage: " << argv[0] << " rom_file core_file" << std::endl;
         return 1;
@@ -63,10 +64,10 @@ int main(int argc, char** argv)
     Sarsa sarsa;
 
     // Play 10 episodes
-    for (int episode = 0; episode < 1000; episode++) 
+    for (int episode = 0; episode < 1000; episode++)
     {
         float totalReward = 0;
-	    std::cout << "Episode no: " << episode << std::endl;
+        std::cout << "Episode no: " << episode << std::endl;
 
         int r[] = {0, 0, 0};
         int w[] = {0, 0};
@@ -74,13 +75,13 @@ int main(int argc, char** argv)
         byte_t y;
         byte_t p;
         unsigned int h;
-        
-        while (!rle.game_over()) 
+        sarsa.ClearHistory();
+        while (!rle.game_over())
         {
             s = ram.get(sRAM);
             y = ram.get(yRAM);
             p = ram.get(pRAM);
-            
+
             if (w[0] > 0)
                 --w[0];
 
@@ -92,7 +93,7 @@ int main(int argc, char** argv)
                 w[0] = 110;
                 r[0] = p;
             }
-            
+
             if (w[0] == 0 && r[1] != r[0])
             {
                 r[1] = r[0];
@@ -103,25 +104,26 @@ int main(int argc, char** argv)
                 r[2] = r[1];
 
             h = 85 + 15 * r[2];
-            
-            State currentState(y, r[2], s + 2);
+
+            byte_t direction = (byte_t)(s + 2);
+            //cout << "y " << y << "pype " << r[2] << "direction " << direction << endl;
+            State currentState(y, r[2], direction);
 
             //Action a = (y > h && s != 255) ? JOYPAD_A : JOYPAD_NOOP;
-        	// Apply the action and get the resulting reward
+            // Apply the action and get the resulting reward
 
-            Action a = sarsa.GetAction(currentState);
+            rle::Action a = sarsa.GetAction(currentState);
 
             float reward = rle.act(a);
 
-            sarsa.EvaluateAndImprovePolicy(reward, rle.game_over());
-		    //std::cout << "Action: " << a << "Reward: " << reward << std::endl;
+            sarsa.EvaluateAndImprovePolicy(reward, false);
+            //std::cout << "Action: " << a << "Reward: " << reward << std::endl;
             totalReward += reward;
         }
-        
+
         cout << "Episode " << episode << " ended with score: " << totalReward << endl;
         //cout << "Y = " << (int)y << "; H = " << (int)h << "; S = " << (int)s << ";" << endl;
         rle.reset_game();
     }
     return 0;
 }
-

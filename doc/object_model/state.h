@@ -13,8 +13,7 @@ public:
     int bird_y;
     int pipe_type;
     int bird_direction;
-
-public:
+    
   State(int bird_y, int pipe_type, int bird_direction) 
     : bird_y(bird_y), pipe_type(pipe_type), bird_direction(bird_direction){}
     

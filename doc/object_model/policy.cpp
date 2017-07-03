@@ -43,14 +43,15 @@ Action Policy::GetAction(State s)
     {
         double randAction = ((double)rand() / (RAND_MAX));
         a = randAction > 0.5 ? JUMP : NOOP;
+
+        std::cout << "Random action taken. Action = " << a << endl;
     }
 
-    _history.push_back(s, a);
+    _history.push_back(pair<State, Action>(s, a));
     return a;
 }
 
 void Policy::FlushToDisk()
 {
 }
-
 }
