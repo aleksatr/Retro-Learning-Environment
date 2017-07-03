@@ -102,7 +102,7 @@ int main(int argc, char** argv)
 
             h = 85 + 15 * r[2];
             
-            Action a = (y > h && s != 255) ? legal_actions[1] : legal_actions[0];
+            Action a = (y > h && s != 255) ? JOYPAD_A : JOYPAD_NOOP;
         	// Apply the action and get the resulting reward
             float reward = rle.act(a);
 		    //std::cout << "Action: " << a << "Reward: " << reward << std::endl;
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
         }
         
         cout << "Episode " << episode << " ended with score: " << totalReward << endl;
-        cout << "Y = " << y << "; H = " << h << "; S = " << s << ";" << endl;
+        //cout << "Y = " << (int)y << "; H = " << (int)h << "; S = " << (int)s << ";" << endl;
         rle.reset_game();
     }
     return 0;
