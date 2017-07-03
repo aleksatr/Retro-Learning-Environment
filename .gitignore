@@ -2,7 +2,7 @@
 
 build
 doc/examples/*Example
-
+doc/examples/FlappyBirdOnSharedLibrary
 
 # Emacs temp files
 *~

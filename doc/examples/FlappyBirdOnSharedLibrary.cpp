@@ -54,7 +54,8 @@ int main(int argc, char** argv)
 
     // Get the vector of minimal actions
     ActionVect legal_actions = rle.getMinimalActionSet();
-    RLERAM &ram = rle.getRAM();
+
+    const RLERAM &ram = rle.getRAM();
     unsigned int sRAM = 0x0037;
     unsigned int yRAM = 0x003F;
     unsigned int pRAM = 0x003B;
@@ -67,14 +68,17 @@ int main(int argc, char** argv)
 
         int r[] = {0, 0, 0};
         int w[] = {0, 0};
-
+        byte_t s;
+        byte_t y;
+        byte_t p;
+        unsigned int h;
+        
         while (!rle.game_over()) 
         {
-            byte_t s = ram.get(sRAM);
-            byte_t y = ram.get(yRAM);
-            byte_t p = ram.get(pRAM);
+            s = ram.get(sRAM);
+            y = ram.get(yRAM);
+            p = ram.get(pRAM);
             
-
             if (w[0] > 0)
                 --w[0];
 
@@ -96,7 +100,7 @@ int main(int argc, char** argv)
             if (w[1] == 0 && r[2] != r[1])
                 r[2] = r[1];
 
-            unsigned int h = 85 + 15 * r[2];
+            h = 85 + 15 * r[2];
             
             Action a = (y > h && s != 255) ? legal_actions[1] : legal_actions[0];
         	// Apply the action and get the resulting reward
@@ -106,6 +110,7 @@ int main(int argc, char** argv)
         }
         
         cout << "Episode " << episode << " ended with score: " << totalReward << endl;
+        cout << "Y = " << y << "; H = " << h << "; S = " << s << ";" << endl;
         rle.reset_game();
     }
     return 0;
