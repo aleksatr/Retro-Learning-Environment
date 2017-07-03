@@ -28,3 +28,6 @@ doc/examples/FlappyBirdOnSharedLibrary
 
 # NES roms
 *.nes
+
+# data containing q values
+data.txt

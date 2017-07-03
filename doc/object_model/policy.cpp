@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "policy.h"
+#include <sstream>
 
 using namespace std;
 
@@ -44,14 +45,53 @@ Action Policy::GetAction(State s)
         double randAction = ((double)rand() / (RAND_MAX));
         a = randAction > 0.5 ? JUMP : NOOP;
 
-        std::cout << "Random action taken. Action = " << a << endl;
+        cout << "Random action taken. Action = " << a << endl;
     }
 
     _history.push_back(pair<State, Action>(s, a));
     return a;
 }
 
-void Policy::FlushToDisk()
+void Policy::FlushToDisk(char *filename)
 {
+    ofstream f(filename);
+
+    if (!f)
+        return;
+
+    ostringstream o;
+    for (int i = 0; i < NUMBER_OF_STATES * NUMBER_OF_ACTIONS; i++)
+    {
+        o << q[i] << endl;
+    }
+    f << o.str();
+
+    f.close();
+
+    cout << "Data saved to file: " << filename << endl;
+}
+void Policy::LoadFromDisk(char *filename)
+{
+    ifstream f(filename);
+    if (!f || !f.is_open())
+        return;
+
+    int i = 0;
+    while (!f.eof() && i < NUMBER_OF_STATES * NUMBER_OF_ACTIONS)
+    {
+        string line;
+
+        getline(f, line);
+
+        double q_val = atof(line.c_str());
+
+        q[i++] = q_val;
+        if (i >= NUMBER_OF_STATES)
+            _actions[i] = q[i] > q[i - NUMBER_OF_STATES] ? JUMP : NOOP;
+    }
+
+    f.close();
+
+    cout << "Data loaded from file: " << filename << endl;
 }
 }

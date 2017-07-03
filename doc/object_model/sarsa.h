@@ -9,15 +9,23 @@ namespace object_model
 {
 class Sarsa : Policy
 {
-  private:
-    bool _updated;
+private:
+  bool _updated;
 
-  public:
-    void ClearHistory();
+public:
+  Sarsa()
+      : Policy(){};
+  void ClearHistory();
 
-    bool EvaluateAndImprovePolicy(double reward, bool isFinal);
+  bool EvaluateAndImprovePolicy(double reward, bool isFinal);
 
-    Action GetAction(State s);
+  Action GetAction(State s);
+
+  void FlushToDisk(char *filename);
+
+  void LoadFromDisk(char *filename);
+  
+  void SetEpsilon(double eps) { epsilon = eps; };
 };
 }
 

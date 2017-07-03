@@ -26,6 +26,8 @@
 
 #endif
 
+#define SNAPSHOT_INTERVAL 50
+
 using namespace std;
 using namespace rle;
 using namespace object_model;
@@ -35,7 +37,7 @@ int main(int argc, char **argv)
 {
     if (argc < 2)
     {
-        std::cerr << "Usage: " << argv[0] << " rom_file core_file" << std::endl;
+        cerr << "Usage: " << argv[0] << " rom_file core_file" << endl;
         return 1;
     }
 
@@ -63,11 +65,27 @@ int main(int argc, char **argv)
     unsigned int pRAM = 0x003B;
     Sarsa sarsa;
 
-    // Play 10 episodes
-    for (int episode = 0; episode < 1000; episode++)
+    char *filename = 0;
+
+    if (argc >= 4)
+        filename = argv[3];
+
+    double epsilon;
+
+    if (argc >= 5)
     {
+        epsilon = atof(argv[4]);
+        sarsa.SetEpsilon(epsilon);
+    }
+    sarsa.LoadFromDisk(filename);
+
+    // Play 10 episodes
+    for (int episode = 0;; episode++)
+    {
+        if (argc >= 4 && !(episode % SNAPSHOT_INTERVAL))
+            sarsa.FlushToDisk(filename);
         float totalReward = 0;
-        std::cout << "Episode no: " << episode << std::endl;
+        cout << "Episode no: " << episode << endl;
 
         int r[] = {0, 0, 0};
         int w[] = {0, 0};
@@ -106,7 +124,7 @@ int main(int argc, char **argv)
             h = 85 + 15 * r[2];
 
             byte_t direction = (byte_t)(s + 2);
-            //cout << "y " << y << "pype " << r[2] << "direction " << direction << endl;
+            // cout << "y " << (int)y << " pipe " << (int)r[2] << " direction " << (int)direction << endl;
             State currentState(y, r[2], direction);
 
             //Action a = (y > h && s != 255) ? JOYPAD_A : JOYPAD_NOOP;
@@ -117,7 +135,7 @@ int main(int argc, char **argv)
             float reward = rle.act(a);
 
             sarsa.EvaluateAndImprovePolicy(reward, false);
-            //std::cout << "Action: " << a << "Reward: " << reward << std::endl;
+            // std::cout << "Action: " << a << "Reward: " << reward << std::endl;
             totalReward += reward;
         }
 

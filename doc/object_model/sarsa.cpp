@@ -30,8 +30,8 @@ bool Sarsa::EvaluateAndImprovePolicy(double reward, bool isFinal)
         int stateIndex = prevState.ToIndex();
         int prevQIndex = prevAction * NUMBER_OF_STATES + stateIndex;
 
-        cout << "PrevState y = " << prevState.bird_y << " Type = "
-         << prevState.pipe_type<<" Direction "<<prevState.bird_direction << " Actions: " << q[stateIndex] << ";" << q[stateIndex + NUMBER_OF_STATES] << endl;
+        //cout << "PrevState y = " << prevState.bird_y << " Type = "
+        // << prevState.pipe_type<<" Direction "<<prevState.bird_direction << " Actions: " << _actions[stateIndex]<<endl; //<< q[stateIndex] << ";" << q[stateIndex + NUMBER_OF_STATES] << endl;
 
         //eval
         q[prevQIndex] = q[prevQIndex] + alpha * ((reward + discount * q[currQIndex]) - q[prevQIndex]);
@@ -62,4 +62,14 @@ Action Sarsa::GetAction(State s)
 
     return currentAction;
 }
+
+void Sarsa::FlushToDisk(char* filename)
+{
+    Policy::FlushToDisk(filename);
+}
+void Sarsa::LoadFromDisk(char* filename)
+{
+   Policy::LoadFromDisk(filename);
+}
+
 }

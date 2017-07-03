@@ -54,7 +54,7 @@ void FlappyBirdSettings::step(const RleSystem &system)
 	m_terminal = !alive && ingame;
 
 	if (m_terminal)
-		m_reward = -30;
+		m_reward = -10;
 	else if(getDecimalScore(0x003F, &system) != 10)
 		m_reward++;	
 }
