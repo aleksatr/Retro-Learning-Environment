@@ -17,7 +17,7 @@ class Sarsa : Policy
 
     bool EvaluateAndImprovePolicy(double reward, bool isFinal);
 
-    Action GetAction(int bird_pos, int pipe_type, int bird_direction);
+    Action GetAction(State s);
 };
 }
 

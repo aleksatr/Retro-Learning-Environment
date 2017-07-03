@@ -18,6 +18,7 @@
 #include <rle_interface.hpp>
 #include <DebugMacros.h>
 #include <algorithm>
+#include "../object_model/sarsa.h"
 
 #ifdef __USE_SDL
  #include <SDL.h>
@@ -59,9 +60,10 @@ int main(int argc, char** argv)
     unsigned int sRAM = 0x0037;
     unsigned int yRAM = 0x003F;
     unsigned int pRAM = 0x003B;
+    Sarsa sarsa;
 
     // Play 10 episodes
-    for (int episode = 0; episode < 10; episode++) 
+    for (int episode = 0; episode < 1000; episode++) 
     {
         float totalReward = 0;
 	    std::cout << "Episode no: " << episode << std::endl;
@@ -102,9 +104,16 @@ int main(int argc, char** argv)
 
             h = 85 + 15 * r[2];
             
-            Action a = (y > h && s != 255) ? JOYPAD_A : JOYPAD_NOOP;
+            State currentState(y, r[2], s + 2);
+
+            //Action a = (y > h && s != 255) ? JOYPAD_A : JOYPAD_NOOP;
         	// Apply the action and get the resulting reward
+
+            Action a = sarsa.GetAction(currentState);
+
             float reward = rle.act(a);
+
+            sarsa.EvaluateAndImprovePolicy(reward, rle.game_over());
 		    //std::cout << "Action: " << a << "Reward: " << reward << std::endl;
             totalReward += reward;
         }

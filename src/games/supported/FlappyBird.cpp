@@ -52,6 +52,9 @@ void FlappyBirdSettings::step(const RleSystem &system)
 	bool alive = getDecimalScore(0x003C, &system) == 1;
 
 	m_terminal = !alive && ingame;
+
+	if (m_terminal)
+		m_reward = -1;
 }
 
 /* is end of game */
