@@ -25,3 +25,6 @@ doc/examples/FlappyBirdOnSharedLibrary
 
 # Eclipse files
 .cproject
+
+# roms
+*.nes
