@@ -15,9 +15,9 @@ class Sarsa : Policy
   public:
     void ClearHistory();
 
-    bool EvaluateAndImprovePolicy(double reward, bool isFinal = true);
+    bool EvaluateAndImprovePolicy(double reward, bool isFinal);
 
-    bool GetAction(int currentSum, bool hasUsableAce, int dealerCard);
+    Action GetAction(int bird_pos, int pipe_type, int bird_direction);
 };
 }
 

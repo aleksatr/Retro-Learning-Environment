@@ -16,13 +16,14 @@ public:
 
 public:
   State(int bird_y, int pipe_type, int bird_direction) 
-    : bird_y(bird_y), pipe_type(pipe_type), bird_direction(bird_direction);
+    : bird_y(bird_y), pipe_type(pipe_type), bird_direction(bird_direction){}
 };
 
 enum Action 
 { 
     NOOP = JOYPAD_NOOP,
-    JUMP = JOYPAD_A
+    JUMP = JOYPAD_A,
+    NUMBER_OF_ACTIONS = 2
 };
 }
 
