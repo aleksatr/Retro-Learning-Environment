@@ -205,6 +205,11 @@ if(BUILD_EXAMPLES)
   target_link_libraries(sharedLibraryInterfaceExample ${LINK_LIBS})
   add_dependencies(sharedLibraryInterfaceExample rle-lib)
   
+	add_executable(FlappyBirdOnSharedLibrary ${CMAKE_CURRENT_SOURCE_DIR}/doc/examples/FlappyBirdOnSharedLibrary.cpp)
+  set_target_properties(FlappyBirdOnSharedLibrary PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/examples)
+  target_link_libraries(FlappyBirdOnSharedLibrary rle)
+  target_link_libraries(FlappyBirdOnSharedLibrary ${LINK_LIBS})
+  add_dependencies(FlappyBirdOnSharedLibrary rle-lib)
 endif()
 
 if(UNIT_TESTING)
