@@ -137,7 +137,7 @@ int main(int argc, char **argv)
             totalReward += reward;
         }
 
-        mc.EvaluateAndImprovePolicy(reward, rle.game_over());
+        mc.EvaluateAndImprovePolicy(0, true);
         cout << "Episode " << episode << " ended with score: " << totalReward << endl;
         //cout << "Y = " << (int)y << "; H = " << (int)h << "; S = " << (int)s << ";" << endl;
         rle.reset_game();

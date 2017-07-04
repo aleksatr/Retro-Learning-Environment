@@ -10,7 +10,7 @@ namespace object_model
     {
         bool actionChanged = false;
 
-        for (int i = 0; i < _history.size(); ++i)
+        for (auto i = 0; i < _history.size(); ++i)
         {
             pair<State, Action> currStateAction = _history[i];
             Action currAction = (Action)currStateAction.second;
@@ -21,7 +21,7 @@ namespace object_model
             int qIndex = currAction * NUMBER_OF_STATES + stateIndex;
 
             //eval
-            q[qIndex] = q[qIndex] + 1.0 / timesVisited[qIndex] * (reward - q[qIndex]);
+            q[qIndex] = q[qIndex] + 1.0 / times_visited[qIndex] * (reward - q[qIndex]);
             //improve
             Action previousAction = _actions[stateIndex];
             _actions[stateIndex] = q[stateIndex] > q[stateIndex + NUMBER_OF_STATES] ? NOOP : JUMP;
