@@ -27,6 +27,7 @@
 #endif
 
 #define SNAPSHOT_INTERVAL 50
+#define FRAME_SKIP 2
 
 using namespace std;
 using namespace rle;
@@ -45,8 +46,8 @@ int main(int argc, char **argv)
 
     // Get & Set the desired settings
     rle.setInt("random_seed", 123);
-    //The default is already 0.25, this is just an example
-    rle.setFloat("repeat_action_probability", 0.25);
+    rle.setInt("frame_skip", FRAME_SKIP);
+    rle.setFloat("repeat_action_probability", 0);
 
 #ifdef __USE_SDL
     rle.setBool("display_screen", true);
@@ -79,20 +80,21 @@ int main(int argc, char **argv)
     }
     sarsa.LoadFromDisk(filename);
 
-    // Play 10 episodes
     for (int episode = 0;; episode++)
     {
         if (argc >= 4 && !(episode % SNAPSHOT_INTERVAL))
             sarsa.FlushToDisk(filename);
-        float totalReward = 0;
-        cout << "Episode no: " << episode << endl;
 
-        int r[] = {0, 0, 0};
+        if (argc < 5)
+            sarsa.SetEpsilon(1.0 / (EXPLORATION + (double)episode));
+
+        float totalReward = 0;
+
+        int r[] = {5, 5, 5};
         int w[] = {0, 0};
         byte_t s;
         byte_t y;
         byte_t p;
-        unsigned int h;
         sarsa.ClearHistory();
         while (!rle.game_over())
         {
@@ -101,10 +103,10 @@ int main(int argc, char **argv)
             p = ram.get(pRAM);
 
             if (w[0] > 0)
-                --w[0];
+                w[0] -= FRAME_SKIP;
 
             if (w[1] > 0)
-                --w[1];
+                w[1] -= FRAME_SKIP;
 
             if (p != r[0])
             {
@@ -112,30 +114,25 @@ int main(int argc, char **argv)
                 r[0] = p;
             }
 
-            if (w[0] == 0 && r[1] != r[0])
+            if (w[0] <= 0 && r[1] != r[0])
             {
                 r[1] = r[0];
                 w[1] = 20;
             }
 
-            if (w[1] == 0 && r[2] != r[1])
+            if (w[1] <= 0 && r[2] != r[1])
                 r[2] = r[1];
-
-            h = 85 + 15 * r[2];
 
             byte_t direction = (byte_t)(s + 2);
             // cout << "y " << (int)y << " pipe " << (int)r[2] << " direction " << (int)direction << endl;
             State currentState(y, r[2], direction);
 
-            //Action a = (y > h && s != 255) ? JOYPAD_A : JOYPAD_NOOP;
-            // Apply the action and get the resulting reward
-
             rle::Action a = sarsa.GetAction(currentState);
 
-            float reward = rle.act(a);
+            double reward = rle.act(a);
 
-            sarsa.EvaluateAndImprovePolicy(reward, false);
-            // std::cout << "Action: " << a << "Reward: " << reward << std::endl;
+            sarsa.EvaluateAndImprovePolicy(reward, rle.game_over());
+            //   cout << "Action: " << a << " Reward: " << reward << std::endl;
             totalReward += reward;
         }
 
