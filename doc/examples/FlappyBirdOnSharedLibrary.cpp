@@ -19,6 +19,7 @@
 #include <DebugMacros.h>
 #include <algorithm>
 #include "../object_model/sarsa.h"
+#include "../object_model/monte_carlo.h"
 
 #ifdef __USE_SDL
 #include <SDL.h>
@@ -64,7 +65,7 @@ int main(int argc, char **argv)
     unsigned int sRAM = 0x0037;
     unsigned int yRAM = 0x003F;
     unsigned int pRAM = 0x003B;
-    Sarsa sarsa;
+    MonteCarlo mc;
 
     char *filename = 0;
 
@@ -76,17 +77,17 @@ int main(int argc, char **argv)
     if (argc >= 5)
     {
         epsilon = atof(argv[4]);
-        sarsa.SetEpsilon(epsilon);
+        mc.SetEpsilon(epsilon);
     }
-    sarsa.LoadFromDisk(filename);
+    mc.LoadFromDisk(filename);
 
     for (int episode = 0;; episode++)
     {
         if (argc >= 4 && !(episode % SNAPSHOT_INTERVAL))
-            sarsa.FlushToDisk(filename);
+            mc.FlushToDisk(filename);
 
         if (argc < 5)
-            sarsa.SetEpsilon(1.0 / (EXPLORATION + (double)episode));
+            mc.SetEpsilon(1.0 / (EXPLORATION + (double)episode));
 
         float totalReward = 0;
 
@@ -95,7 +96,7 @@ int main(int argc, char **argv)
         byte_t s;
         byte_t y;
         byte_t p;
-        sarsa.ClearHistory();
+        mc.ClearHistory();
         while (!rle.game_over())
         {
             s = ram.get(sRAM);
@@ -127,15 +128,16 @@ int main(int argc, char **argv)
             // cout << "y " << (int)y << " pipe " << (int)r[2] << " direction " << (int)direction << endl;
             State currentState(y, r[2], direction);
 
-            rle::Action a = sarsa.GetAction(currentState);
+            rle::Action a = mc.GetAction(currentState);
 
             double reward = rle.act(a);
 
-            sarsa.EvaluateAndImprovePolicy(reward, rle.game_over());
+            mc.AddRewardToHistory(reward);
             //   cout << "Action: " << a << " Reward: " << reward << std::endl;
             totalReward += reward;
         }
 
+        mc.EvaluateAndImprovePolicy(reward, rle.game_over());
         cout << "Episode " << episode << " ended with score: " << totalReward << endl;
         //cout << "Y = " << (int)y << "; H = " << (int)h << "; S = " << (int)s << ";" << endl;
         rle.reset_game();
