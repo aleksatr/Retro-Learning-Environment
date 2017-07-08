@@ -20,13 +20,16 @@ Policy::Policy()
     {
         _actions[i] = NOOP;
         q[i] = q[i + NUMBER_OF_STATES] = 0;
+        times_visited[i] = times_visited[i + NUMBER_OF_STATES] = 0;
     }
+
     srand(time(NULL));
 }
 
 void Policy::ClearHistory()
 {
     _history.clear();
+    reward_history.clear();
 }
 
 void Policy::PrintHistory()
@@ -35,7 +38,7 @@ void Policy::PrintHistory()
     {
         int stateIndex = ((State)_history[i].first).ToIndex() % NUMBER_OF_STATES;
 
-        std::cout << "State " << ((State)_history[i].first).bird_y << ";" << ((State)_history[i].first).bird_direction << ";"
+        std::cout << "State " << ((State)_history[i].first).height_difference << ";" << ((State)_history[i].first).bird_direction << ";"
                   << " Action " << _history[i].second << " Qs " << q[stateIndex] << ";" << q[stateIndex + NUMBER_OF_STATES] << endl;
     }
 }
@@ -51,7 +54,7 @@ Action Policy::GetAction(State s)
 
     double r = ((double)rand() / (RAND_MAX));
 
-    if (/*Program.Mode == Mode.Train && */ r < epsilon)
+    if (r < epsilon)
     {
         double randAction = ((double)rand() / (RAND_MAX));
         a = randAction > 0.5 ? JUMP : NOOP;
@@ -59,8 +62,14 @@ Action Policy::GetAction(State s)
         cout << "Random action taken. Action = " << a << endl;
     }
 
+    times_visited[NUMBER_OF_STATES * a + index]++;
     _history.push_back(pair<State, Action>(s, a));
     return a;
+}
+
+void Policy::AddRewardToHistory(double reward)
+{
+    reward_history.push_back(reward);
 }
 
 void Policy::FlushToDisk(char *filename)
@@ -81,6 +90,7 @@ void Policy::FlushToDisk(char *filename)
 
     cout << "Data saved to file: " << filename << endl;
 }
+
 void Policy::LoadFromDisk(char *filename)
 {
     ifstream f(filename);

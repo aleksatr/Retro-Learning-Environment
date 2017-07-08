@@ -18,7 +18,9 @@ class Policy
 protected:
   Action _actions[NUMBER_OF_STATES];
   double q[NUMBER_OF_STATES * NUMBER_OF_ACTIONS];
+  int times_visited[NUMBER_OF_STATES * NUMBER_OF_ACTIONS];
   std::vector<std::pair<State, Action>> _history;
+  std::vector<double> reward_history;
   double epsilon = 1 / EXPLORATION;
   double alpha = 0.01;
   const double discount = 0.8;
@@ -31,6 +33,8 @@ public:
 
   virtual Action GetAction(State s);
 
+  virtual void AddRewardToHistory(double reward);
+
   ///returns true if best action for any state is changed
   virtual bool EvaluateAndImprovePolicy(double reward, bool isFinal) = 0;
 
@@ -38,6 +42,8 @@ public:
 
   virtual void LoadFromDisk(char* filename);
   void PrintHistory();
+
+  inline virtual void SetEpsilon(double eps) { epsilon = eps; };
 };
 }
 

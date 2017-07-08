@@ -19,6 +19,7 @@
 #include <DebugMacros.h>
 #include <algorithm>
 #include "../object_model/sarsa.h"
+#include "../object_model/monte_carlo.h"
 
 #ifdef __USE_SDL
 #include <SDL.h>
@@ -47,7 +48,7 @@ int main(int argc, char **argv)
     // Get & Set the desired settings
     rle.setInt("random_seed", 123);
     rle.setInt("frame_skip", FRAME_SKIP);
-    rle.setFloat("repeat_action_probability", 0);
+    rle.setFloat("repeat_action_probability", 0.0f);
 
 #ifdef __USE_SDL
     rle.setBool("display_screen", true);
@@ -64,29 +65,35 @@ int main(int argc, char **argv)
     unsigned int sRAM = 0x0037;
     unsigned int yRAM = 0x003F;
     unsigned int pRAM = 0x003B;
-    Sarsa sarsa;
+    Policy *policy;
 
     char *filename = 0;
 
-    if (argc >= 4)
-        filename = argv[3];
+    if(argc >= 4 && argv[3][0]=='m')
+        policy = new MonteCarlo();
+    else
+        policy = new Sarsa();
+
+
+    if (argc >= 5)
+        filename = argv[4];
 
     double epsilon;
 
-    if (argc >= 5)
+    if (argc >= 6)
     {
-        epsilon = atof(argv[4]);
-        sarsa.SetEpsilon(epsilon);
+        epsilon = atof(argv[5]);
+        policy->SetEpsilon(epsilon);
     }
-    sarsa.LoadFromDisk(filename);
+    policy->LoadFromDisk(filename);
 
     for (int episode = 0;; episode++)
     {
         if (argc >= 4 && episode && !(episode % SNAPSHOT_INTERVAL))
-            sarsa.FlushToDisk(filename);
+            policy->FlushToDisk(filename);
 
         if (argc < 5)
-            sarsa.SetEpsilon(1.0 / (EXPLORATION + (double)episode));
+            policy->SetEpsilon(1.0 / (EXPLORATION + (double)episode));
 
         float totalReward = 0;
 
@@ -95,8 +102,9 @@ int main(int argc, char **argv)
         byte_t s;
         byte_t y;
         byte_t p;
-        sarsa.PrintHistory();
-        sarsa.ClearHistory();
+
+        policy->PrintHistory();
+        policy->ClearHistory();
         while (!rle.game_over())
         {
             s = ram.get(sRAM);
@@ -130,22 +138,21 @@ int main(int argc, char **argv)
 
             int relative_height = r[2] == 5 ? 200 + (y / 2) : ((y - h + 200) % 200); 
 
-            //cout << "rel " << (int)relative_height << " pipe " << (int)r[2] << " y "<< (int) y 
-            //<< " height " << (int)h << endl;
             State currentState(relative_height, direction);
 
-            rle::Action a = sarsa.GetAction(currentState);
+            rle::Action a = policy->GetAction(currentState);
 
             double reward = rle.act(a);
 
-            sarsa.EvaluateAndImprovePolicy(reward, rle.game_over());
-            //   cout << "Action: " << a << " Reward: " << reward << std::endl;
+            policy->EvaluateAndImprovePolicy(reward, rle.game_over());
+            policy->AddRewardToHistory(reward);
             totalReward += reward;
         }
 
         cout << "Episode " << episode << " ended with score: " << totalReward << endl;
-        //cout << "Y = " << (int)y << "; H = " << (int)h << "; S = " << (int)s << ";" << endl;
         rle.reset_game();
     }
+
+    delete policy;
     return 0;
 }

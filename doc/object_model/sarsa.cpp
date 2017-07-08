@@ -43,9 +43,6 @@ bool Sarsa::EvaluateAndImprovePolicy(double reward, bool isFinal)
         //improve
         previousAction = _actions[currStateIndex];
         _updated = (previousAction != (_actions[currStateIndex] = q[currStateIndex] > q[currStateIndex + NUMBER_OF_STATES] ? NOOP : JUMP));
-
-        //std::cout << q[currStateIndex] << ";" << q[currStateIndex + NUMBER_OF_STATES] << endl;
-        cout << "CurrState y = " << currState.bird_y << " Actions: " << q[currStateIndex] << ";" << q[currStateIndex + NUMBER_OF_STATES] << endl;
     }
 
     return _updated;
@@ -59,10 +56,7 @@ int Sarsa::EvalueTD(double reward, int index, int currentIndex, double gama)
     State prevState = (State)prevStateAction.first;
     int stateIndex = prevState.ToIndex();
     int prevQIndex = prevAction * NUMBER_OF_STATES + stateIndex;
-
-    //cout << "PrevState y = " << prevState.bird_y << " Type = "
-    // << prevState.pipe_type<<" Direction "<<prevState.bird_direction << " Actions: " << q[stateIndex] << ";" << q[stateIndex + NUMBER_OF_STATES] << endl;
-
+    
     //eval
     q[prevQIndex] = q[prevQIndex] + alpha * ((reward + gama * q[currentIndex]) - q[prevQIndex]);
 
