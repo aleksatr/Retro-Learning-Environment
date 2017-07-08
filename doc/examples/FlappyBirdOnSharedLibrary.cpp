@@ -27,7 +27,7 @@
 #endif
 
 #define SNAPSHOT_INTERVAL 50
-#define FRAME_SKIP 2
+#define FRAME_SKIP 1
 
 using namespace std;
 using namespace rle;
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 
     for (int episode = 0;; episode++)
     {
-        if (argc >= 4 && !(episode % SNAPSHOT_INTERVAL))
+        if (argc >= 4 && episode && !(episode % SNAPSHOT_INTERVAL))
             sarsa.FlushToDisk(filename);
 
         if (argc < 5)
@@ -95,6 +95,7 @@ int main(int argc, char **argv)
         byte_t s;
         byte_t y;
         byte_t p;
+        sarsa.PrintHistory();
         sarsa.ClearHistory();
         while (!rle.game_over())
         {
@@ -124,8 +125,14 @@ int main(int argc, char **argv)
                 r[2] = r[1];
 
             byte_t direction = (byte_t)(s + 2);
-            // cout << "y " << (int)y << " pipe " << (int)r[2] << " direction " << (int)direction << endl;
-            State currentState(y, r[2], direction);
+
+            unsigned int h = 85 + 15 * r[2];
+
+            int relative_height = r[2] == 5 ? 200 + (y / 2) : ((y - h + 200) % 200); 
+
+            //cout << "rel " << (int)relative_height << " pipe " << (int)r[2] << " y "<< (int) y 
+            //<< " height " << (int)h << endl;
+            State currentState(relative_height, direction);
 
             rle::Action a = sarsa.GetAction(currentState);
 

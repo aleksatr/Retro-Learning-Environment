@@ -7,7 +7,7 @@
 
 namespace object_model
 {
-class Sarsa : Policy
+class Sarsa : public Policy
 {
 private:
   bool _updated;
@@ -21,11 +21,10 @@ public:
 
   Action GetAction(State s);
 
-  void FlushToDisk(char *filename);
-
-  void LoadFromDisk(char *filename);
-  
   void SetEpsilon(double eps) { epsilon = eps; };
+
+private:
+  int EvalueTD(double reward, int index, int prevIndex, double gama);
 };
 }
 

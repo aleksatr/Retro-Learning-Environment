@@ -6,7 +6,8 @@
 #include <fstream>
 #include "state.h"
 
-#define NUMBER_OF_STATES 6000
+#define NUMBER_OF_STATES 1800
+#define PRINT_LAST_STATEACTIONS 5
 #define EXPLORATION 20
 
 
@@ -19,8 +20,8 @@ protected:
   double q[NUMBER_OF_STATES * NUMBER_OF_ACTIONS];
   std::vector<std::pair<State, Action>> _history;
   double epsilon = 1 / EXPLORATION;
-  double alpha = 0.001;
-  const double discount = 0.9;
+  double alpha = 0.01;
+  const double discount = 0.8;
 
 public:
   Policy();
@@ -36,6 +37,7 @@ public:
   virtual void FlushToDisk(char* filename);
 
   virtual void LoadFromDisk(char* filename);
+  void PrintHistory();
 };
 }
 

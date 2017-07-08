@@ -29,6 +29,17 @@ void Policy::ClearHistory()
     _history.clear();
 }
 
+void Policy::PrintHistory()
+{
+    for (int i = _history.size() - 1; i >= 0 && i >= _history.size() - PRINT_LAST_STATEACTIONS; i--)
+    {
+        int stateIndex = ((State)_history[i].first).ToIndex() % NUMBER_OF_STATES;
+
+        std::cout << "State " << ((State)_history[i].first).bird_y << ";" << ((State)_history[i].first).bird_direction << ";"
+                  << " Action " << _history[i].second << " Qs " << q[stateIndex] << ";" << q[stateIndex + NUMBER_OF_STATES] << endl;
+    }
+}
+
 Policy::~Policy()
 {
 }
@@ -87,7 +98,7 @@ void Policy::LoadFromDisk(char *filename)
 
         q[i++] = q_val;
         if (i >= NUMBER_OF_STATES)
-            _actions[i] = q[i] > q[i - NUMBER_OF_STATES] ? JUMP : NOOP;
+            _actions[i - NUMBER_OF_STATES] = q[i] > q[i - NUMBER_OF_STATES] ? JUMP : NOOP;
     }
 
     f.close();

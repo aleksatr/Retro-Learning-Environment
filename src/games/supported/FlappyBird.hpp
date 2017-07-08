@@ -81,6 +81,7 @@ namespace rle
         reward_t m_reward;
         reward_t m_score;
         int flap;
+        bool should_terminate;
     };
 
 } // namespace rle

@@ -45,18 +45,27 @@ void FlappyBirdSettings::step(const RleSystem &system)
 	reward_t score = getDecimalScore(0x0041, &system) + 10 * getDecimalScore(0x0042, &system) 
 						+ 100 * getDecimalScore(0x0043, &system) + 1000 * getDecimalScore(0x0044, &system);
 
-	m_reward = 100*(score - m_score);
+	m_terminal = should_terminate;
+
+	m_reward = 0;
 	m_score = score;
 
 	bool ingame = getDecimalScore(0x0049, &system) == 1;	
 	bool alive = getDecimalScore(0x003C, &system) == 1;
 
-	m_terminal = !alive && ingame;
+	should_terminate = !alive && ingame;
 
-	if (m_terminal)
-		m_reward = -10;
-	else if(getDecimalScore(0x003F, &system) != 10)
+	if (should_terminate)
+	{
+		m_reward = -100;
+	}
+	else if (getDecimalScore(0x003F, &system) != 10)
 		m_reward++;	
+	else
+	{
+		m_reward = -100;
+		should_terminate = true;
+	}
 }
 
 /* is end of game */
@@ -85,7 +94,7 @@ void FlappyBirdSettings::reset()
 {
 	m_reward = 0;
 	m_score = 0;
-	m_terminal = false;
+	m_terminal = should_terminate = false;
 }
 
 /* saves the state of the rom settings */
@@ -109,7 +118,7 @@ ActionVect FlappyBirdSettings::getStartingActions(const RleSystem &system)
 	int i;
 	ActionVect startingActions;
 
-	for (i = 0; i < 350; i++)
+	for (i = 0; i < 500; i++)
 	{
 		startingActions.push_back(JOYPAD_NOOP);
 	}

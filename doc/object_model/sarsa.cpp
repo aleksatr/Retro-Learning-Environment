@@ -2,6 +2,8 @@
 #include <vector>
 #include "sarsa.h"
 
+#define TD_N 2
+
 using namespace std;
 
 namespace object_model
@@ -20,24 +22,19 @@ bool Sarsa::EvaluateAndImprovePolicy(double reward, bool isFinal)
     State currState = (State)currStateAction.first;
     int currStateIndex = currState.ToIndex();
     int currQIndex = currAction * NUMBER_OF_STATES + currStateIndex;
-    bool previousAction;
+    Action previousAction;
 
-    if (numOfPrevSteps > 1 && !isFinal)
+    if (numOfPrevSteps > TD_N && !isFinal)
     {
-        pair<State, Action> prevStateAction = _history[numOfPrevSteps - 2];
-        Action prevAction = (Action)prevStateAction.second;
-        State prevState = (State)prevStateAction.first;
-        int stateIndex = prevState.ToIndex();
-        int prevQIndex = prevAction * NUMBER_OF_STATES + stateIndex;
+        double gama = 1;
+        int currentIndex = currQIndex;
+        for (int i = 0; i < TD_N; i++)
+        {
+            gama *= discount;
+            int index = numOfPrevSteps - 2 - i;
 
-        //cout << "PrevState y = " << prevState.bird_y << " Type = "
-        // << prevState.pipe_type<<" Direction "<<prevState.bird_direction << " Actions: " << _actions[stateIndex]<<endl; //<< q[stateIndex] << ";" << q[stateIndex + NUMBER_OF_STATES] << endl;
-
-        //eval
-        q[prevQIndex] = q[prevQIndex] + alpha * ((reward + discount * q[currQIndex]) - q[prevQIndex]);
-        //improve
-        previousAction = _actions[stateIndex];
-        _updated = (previousAction != (_actions[stateIndex] = q[stateIndex] > q[stateIndex + NUMBER_OF_STATES] ? NOOP : JUMP));
+            currentIndex = EvalueTD(reward, index, currentIndex, gama);
+        }
     }
     else if (isFinal)
     {
@@ -54,6 +51,28 @@ bool Sarsa::EvaluateAndImprovePolicy(double reward, bool isFinal)
     return _updated;
 }
 
+int Sarsa::EvalueTD(double reward, int index, int currentIndex, double gama)
+{
+
+    pair<State, Action> prevStateAction = _history[index];
+    Action prevAction = (Action)prevStateAction.second;
+    State prevState = (State)prevStateAction.first;
+    int stateIndex = prevState.ToIndex();
+    int prevQIndex = prevAction * NUMBER_OF_STATES + stateIndex;
+
+    //cout << "PrevState y = " << prevState.bird_y << " Type = "
+    // << prevState.pipe_type<<" Direction "<<prevState.bird_direction << " Actions: " << q[stateIndex] << ";" << q[stateIndex + NUMBER_OF_STATES] << endl;
+
+    //eval
+    q[prevQIndex] = q[prevQIndex] + alpha * ((reward + gama * q[currentIndex]) - q[prevQIndex]);
+
+    //improve
+    Action previousAction = _actions[stateIndex];
+    _updated = (previousAction != (_actions[stateIndex] = q[stateIndex] > q[stateIndex + NUMBER_OF_STATES] ? NOOP : JUMP));
+
+    return prevQIndex;
+}
+
 Action Sarsa::GetAction(State s)
 {
     Action currentAction = Policy::GetAction(s);
@@ -62,14 +81,4 @@ Action Sarsa::GetAction(State s)
 
     return currentAction;
 }
-
-void Sarsa::FlushToDisk(char* filename)
-{
-    Policy::FlushToDisk(filename);
-}
-void Sarsa::LoadFromDisk(char* filename)
-{
-   Policy::LoadFromDisk(filename);
-}
-
 }
