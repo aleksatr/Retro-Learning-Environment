@@ -28,7 +28,7 @@
 #endif
 
 #define SNAPSHOT_INTERVAL 50
-#define FRAME_SKIP 2
+#define FRAME_SKIP 1
 
 using namespace std;
 using namespace rle;
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     // Get & Set the desired settings
     rle.setInt("random_seed", 123);
     rle.setInt("frame_skip", FRAME_SKIP);
-    rle.setFloat("repeat_action_probability", 0);
+    rle.setFloat("repeat_action_probability", 0.0f);
 
 #ifdef __USE_SDL
     rle.setBool("display_screen", true);
@@ -125,15 +125,20 @@ int main(int argc, char **argv)
                 r[2] = r[1];
 
             byte_t direction = (byte_t)(s + 2);
-            // cout << "y " << (int)y << " pipe " << (int)r[2] << " direction " << (int)direction << endl;
-            State currentState(y, r[2], direction);
-
+            //cout << "y " << (int)y << " pipe " << (int)r[2] << " direction " << (int)direction << endl;
+            if(direction > 5)
+                direction = 5;
+            
+            //State currentState(y, r[2], direction);
+            int diff = y - 85 - 15 * r[2];
+            State currentState(diff, direction);
             rle::Action a = mc.GetAction(currentState);
 
             double reward = rle.act(a);
 
             mc.AddRewardToHistory(reward);
-            //   cout << "Action: " << a << " Reward: " << reward << std::endl;
+            //cout << "dY = " << currentState.height_difference << " direction = " << (int)currentState.bird_direction << endl;
+            //cout << "Action: " << a << " Reward: " << reward << std::endl;
             totalReward += reward;
         }
 

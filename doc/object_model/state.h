@@ -10,26 +10,24 @@ namespace object_model
 class State
 {
 public:
-    int bird_y;
-    int pipe_type;
-    int bird_direction;
+    int bird_direction; //od -200 do 199
+    int height_difference; //recimo da ih ima 6, od 0 do 5
     
-  State(int bird_y, int pipe_type, int bird_direction) 
-    : bird_y(bird_y), pipe_type(pipe_type), bird_direction(bird_direction){}
+  State(int height_difference, int bird_direction) 
+    : height_difference(height_difference), bird_direction(bird_direction){}
     
     State(int index) 
-    : bird_y(index % 200), pipe_type(index / 1000), bird_direction((index % 1000) / 200){}
+    : height_difference(index % 400 - 200), bird_direction(index / 400){}
 
     int ToIndex()
     {
-        return pipe_type * 1000 + bird_direction * 200 + bird_y;
+        return bird_direction * 400 + 200 + height_difference;
     }
 
     void FromIndex(int index)
     {
-        bird_y = index % 200;
-        pipe_type = index / 1000;
-        bird_direction = (index % 1000) / 200;
+        bird_direction = index / 200;
+        height_difference = index % 400 - 200;
     }
 };
 

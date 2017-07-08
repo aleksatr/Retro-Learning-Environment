@@ -97,7 +97,7 @@ void Policy::LoadFromDisk(char *filename)
 
         q[i++] = q_val;
         if (i >= NUMBER_OF_STATES)
-            _actions[i] = q[i] > q[i - NUMBER_OF_STATES] ? JUMP : NOOP;
+            _actions[i - NUMBER_OF_STATES] = q[i] > q[i - NUMBER_OF_STATES] ? JUMP : NOOP;
     }
 
     f.close();

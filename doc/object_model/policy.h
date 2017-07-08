@@ -6,7 +6,7 @@
 #include <fstream>
 #include "state.h"
 
-#define NUMBER_OF_STATES 6000
+#define NUMBER_OF_STATES 2400
 #define EXPLORATION 20
 
 
