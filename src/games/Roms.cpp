@@ -69,7 +69,7 @@
 //#include "supported/NameThisGame.hpp"
 //#include "supported/Phoenix.hpp"
 //#include "supported/Pitfall.hpp"
-//#include "supported/Pong.hpp"
+#include "supported/Pong.hpp"
 //#include "supported/Pooyan.hpp"
 //#include "supported/PrivateEye.hpp"
 //#include "supported/QBert.hpp"
@@ -137,7 +137,7 @@ static const RomSettings *roms[]  = {
 //    new NameThisGameSettings(),
 //    new PhoenixSettings(),
 //    new PitfallSettings(),
-//    new PongSettings(),
+    new PongSettings(),
 //    new PooyanSettings(),
 //    new PrivateEyeSettings(),
 //    new QBertSettings(),

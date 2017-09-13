@@ -210,6 +210,18 @@ if(BUILD_EXAMPLES)
   target_link_libraries(FlappyBirdOnSharedLibrary rle)
   target_link_libraries(FlappyBirdOnSharedLibrary ${LINK_LIBS})
   add_dependencies(FlappyBirdOnSharedLibrary rle-lib)
+
+	add_executable(PongOnSharedLibrary ${CMAKE_CURRENT_SOURCE_DIR}/doc/examples/PongOnSharedLibrary.cpp)
+  set_target_properties(PongOnSharedLibrary PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/examples)
+  target_link_libraries(PongOnSharedLibrary rle)
+  target_link_libraries(PongOnSharedLibrary ${LINK_LIBS})
+  add_dependencies(PongOnSharedLibrary rle-lib)
+
+	add_executable(PongOnSharedLibrary_qTable ${CMAKE_CURRENT_SOURCE_DIR}/doc/examples/PongOnSharedLibrary_qTable.cpp)
+  set_target_properties(PongOnSharedLibrary_qTable PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/examples)
+  target_link_libraries(PongOnSharedLibrary_qTable rle)
+  target_link_libraries(PongOnSharedLibrary_qTable ${LINK_LIBS})
+  add_dependencies(PongOnSharedLibrary_qTable rle-lib)
 endif()
 
 if(UNIT_TESTING)

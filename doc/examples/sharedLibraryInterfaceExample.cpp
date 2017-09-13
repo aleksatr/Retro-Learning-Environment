@@ -52,8 +52,7 @@ int main(int argc, char** argv) {
     // Get the vector of minimal actions
     ActionVect legal_actions = rle.getMinimalActionSet();
 
-
-//    // Play 10 episodes
+    // Play 10 episodes
     for (int episode=0; episode<10; episode++) {
         float totalReward = 0;
 	    std::cout << "Episode no: " << episode << std::endl;
